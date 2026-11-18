@@ -1,0 +1,36 @@
+services:
+  kafka:
+    image: apache/kafka:4.1.0
+    container_name: kafka
+    ports:
+      - "9092:9092"
+    environment:
+      # --- KRaft 기본 ---
+      KAFKA_NODE_ID: 1
+      KAFKA_PROCESS_ROLES: broker,controller        # 이 노드가 브로커 + 컨트롤러 둘 다 함
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka:9093   # 컨트롤러 투표 멤버: "노드ID@주소"
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+
+      # --- 리스너 (제일 중요!) ---
+      KAFKA_LISTENERS: INTERNAL://:29092,EXTERNAL://:9092,CONTROLLER://:9093
+      KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka:29092,EXTERNAL://localhost:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT,CONTROLLER:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
+
+      # --- 브로커 1대라서 내부 토픽 복제 수를 1로 ---
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+
+  kafka-ui:
+    image: kafbat/kafka-ui:latest
+    container_name: kafka-ui
+    ports:
+      - "8989:8080"        # Spring 앱이 8080을 쓸 거라 UI는 8989로
+    environment:
+      KAFKA_CLUSTERS_0_NAME: local
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:29092   # 컨테이너끼리는 INTERNAL로 접속
+      DYNAMIC_CONFIG_ENABLED: "true"
+    depends_on:
+      - kafka

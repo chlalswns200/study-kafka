@@ -5,8 +5,13 @@
 
 ## 현재 위치
 
-- **진행 중**: Stage 2. Producer 기초 (① 개념 설명 전)
-- **다음 할 일**: Stage 2 개념 설명 → Spring `KafkaTemplate`으로 REST API → Kafka 발행 구현
+- **진행 중**: Stage 2. Producer 기초 (② 코드 적용 — 개념 설명 완료, 2026-11-23)
+- **다음 할 일**: 과제 0~4 구현 → 코드 리뷰 → 문제 출제
+  - 과제 0: `application.yaml`에 `spring.kafka` 설정 (+ DB 비밀번호 환경변수화 `${DB_PASSWORD:1234}`)
+  - 과제 1: `com.kafkastudy.stage2.config` — `NewTopic` Bean으로 `stage2-messages`(파티션 3, 복제 1) 생성
+  - 과제 2: `stage2.producer.MessageProducer` — `KafkaTemplate<String,String>`으로 발행, 성공 시 partition/offset/스레드명 로그, 실패 시 에러 로그
+  - 과제 3: `stage2.controller` — `POST /messages` (`{"key","message"}`) → 202 응답
+  - 과제 4: API 호출 → console-consumer(print.partition/key) + Kafka UI로 확인
 
 ---
 

@@ -254,7 +254,7 @@
 ## 진도 체크
 
 - [x] Stage 0. 환경 구축 & 첫 만남
-- [ ] Stage 1. 핵심 개념
+- [x] Stage 1. 핵심 개념
 - [ ] Stage 2. Producer 기초
 - [ ] Stage 3. Consumer 기초
 - [ ] Stage 4. 메시지 포맷 & 테스트

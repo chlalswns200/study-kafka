@@ -5,8 +5,30 @@
 
 ## 현재 위치
 
-- **진행 중**: Stage 1. 핵심 개념 (① 개념 설명 단계)
-- **다음 할 일**: Stage 1 실습 과제 수행 → 개념 질문 답변
+- **진행 중**: Stage 2. Producer 기초 (① 개념 설명 전)
+- **다음 할 일**: Stage 2 개념 설명 → Spring `KafkaTemplate`으로 REST API → Kafka 발행 구현
+
+---
+
+## Stage 1. 핵심 개념 — ✅ 완료 (2026-11-23)
+
+**실습**: 실습 1~4 및 Q1·Q2 실험은 다른 PC에서 수행 완료(사용자 보고).
+
+**문제 1차 채점 (2026-11-23)**
+| # | 질문 | 결과 | 피드백 |
+|---|---|---|---|
+| Q1 | key 없이 보내면 골고루 퍼질까? | ○ | 결론(안 퍼짐) 정답. 이유 보완: key가 null이라 해시 불가 → **Sticky Partitioner**가 배치가 찰 때(batch.size 16KB)까지 한 파티션에 몰아 보냄(배치 효율). 데이터가 많아지면 장기적으로는 분산됨. 옛날(2.4 이전)엔 라운드로빈 |
+| Q2 | `--from-beginning` 유무 | △ | offset 관련이라는 방향은 맞음. 오개념 2개: ① console-consumer는 `--group` 없으면 **매번 새 랜덤 그룹** → 책갈피가 없음 → `auto.offset.reset=latest`(지금부터 오는 것만) → 사과/바나나/포도 안 뜸 ② `--from-beginning` = `earliest` = 로그에 남은 **맨 처음 offset부터 전부**("안 읽힌 것부터"가 아님). 또 책갈피가 이미 있는 그룹이면 `--from-beginning`은 무시됨 |
+| Q3 | `__consumer_offsets` | △ | (a)○ 그룹별·토픽별·파티션별 committed offset. (b)△ 토픽마다가 아니라 클러스터에 하나, **처음으로 컨슈머 그룹이 코디네이터를 찾을 때** 자동 생성. (c)✗ **compact** — key(그룹+토픽+파티션)별 최신 offset만 의미 있음. (그룹 offset 만료 `offsets.retention.minutes`=7일은 tombstone으로 처리). (d)✗ `offsets.topic.num.partitions` 기본 50 → hash(group.id)%50 파티션의 리더 브로커가 그 그룹의 **코디네이터** → 부하 분산. 나중에 바꾸면 매핑이 깨지니 처음부터 넉넉히 |
+| Q4 | retention 지났는데 남은 메시지 | ✗ | 삭제는 메시지 단위가 아니라 **세그먼트 단위**, 그리고 **active segment는 절대 삭제 안 됨**. 세그먼트 안의 가장 최신 메시지가 retention을 넘어야 그 세그먼트 통째로 삭제. 오개념: "offset에서 사라진다" → offset 번호는 절대 재배치 안 됨, log start offset만 앞으로 이동 |
+
+**복습 문제 채점**
+| # | 질문 | 결과 | 피드백 |
+|---|---|---|---|
+| R1 | `--group study` 재실행 시 `--from-beginning` | ○ | 정답. 그룹에 committed offset이 있으면 `auto.offset.reset`(=from-beginning)은 무시 → 딸기·수박만. Q2 오개념 해소 |
+| R2 | 세그먼트 7일 롤 + retention 7일 최악의 경우 | ○ | 정답 약 14일(+ retention 체크 주기 5분). 보충: 시간 기반 롤은 새 메시지가 append될 때 판단되므로 트래픽이 끊기면 더 길어질 수 있음 |
+
+**복습 포인트**: auto.offset.reset(latest/earliest)과 committed offset의 우선순위, 세그먼트 단위 삭제, compaction 용도 → Stage 3(Consumer)에서 다시 나옴
 
 ---
 

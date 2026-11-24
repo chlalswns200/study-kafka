@@ -17,14 +17,15 @@ public class MessageProducer {
 
     private final KafkaTemplate<String, String> kafkaTemplate;
 
-    public void send(String key, String message) {
-        CompletableFuture<SendResult<String, String>> future = kafkaTemplate.send(key, message);
+    public void send(String topic, String key, String message) {
+        CompletableFuture<SendResult<String, String>> future = kafkaTemplate.send(topic, key, message);
 
         future.whenComplete((result, ex) -> {
             log.info("[MessageProducer send Thread Info] ={}", Thread.currentThread().getName());
             if (ex == null) {
                 ProducerRecord<String, String> producerRecord = result.getProducerRecord();
-                log.info("key={} partition={} offset={}",producerRecord.key(),producerRecord.partition(),producerRecord.value());
+                RecordMetadata recordMetadata = result.getRecordMetadata();
+                log.info("key={} partition={} offset={}",producerRecord.key(),recordMetadata.partition(),recordMetadata.offset());
             } else {
                 log.error("[MessageProducer send Error]",ex);
             }

@@ -5,9 +5,13 @@
 
 ## 현재 위치
 
-- **진행 중**: Stage 3. Consumer 기초 (① 개념 설명 전)
-- **다음 할 일**: Stage 3 개념 설명 → `@KafkaListener` 구현
-- **Stage 2 남은 정리(선택)**: `MessageControllerTest.sendTest()`(옛 "success" 바디 기대) 삭제 → 현재 유일한 실패 테스트. `sendSuccessTest`에 명시적 stub 추가
+- **진행 중**: Stage 3. Consumer 기초 (② 코드 적용 — 개념 설명 완료, 2026-11-26)
+- **다음 할 일**: 과제 0~4 구현 → 코드 리뷰 → 문제 출제
+  - 과제 0: `spring.kafka.consumer` 설정 (StringDeserializer, `auto-offset-reset: earliest` — 왜 earliest인지 생각)
+  - 과제 1: `com.kafkastudy.stage3` — `stage2-messages`를 구독하는 리스너(group `stage3-group-a`), `ConsumerRecord`로 key/partition/offset/value/스레드명 로그
+  - 과제 2: 같은 토픽, 다른 그룹(`stage3-group-b`) 리스너 추가 → 둘 다 받는지 비교
+  - 과제 3: 앱 2개 실행(8080, 8081) → `partitions assigned` 로그로 리밸런싱 관찰 → 하나 종료 후 재할당 관찰 (토픽 파티션 5개)
+  - 과제 4: 수동 커밋 — 별도 컨테이너 팩토리 Bean(`AckMode.MANUAL`, 이름은 `kafkaListenerContainerFactory` 피하기) + `Acknowledgment.acknowledge()`
 
 ---
 

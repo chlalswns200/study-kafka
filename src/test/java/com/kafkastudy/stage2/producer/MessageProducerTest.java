@@ -5,8 +5,12 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Bean;
+import org.springframework.kafka.support.SendResult;
+
+import java.util.concurrent.CompletableFuture;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 class MessageProducerTest {
@@ -21,10 +25,12 @@ class MessageProducerTest {
         String key = "user%d";
         String message = "item%d";
 
-        for (int i = 0; i < 6; i++) {
-            producer.send(topic, key.formatted(i), message.formatted(i));
-        }
 
+        producer.send(topic, key.formatted(88), message.formatted(88))
+                .thenAccept(result -> {
+                    assertThat(result.getRecordMetadata().offset()).isGreaterThanOrEqualTo(0);
+                    assertThat(result.getRecordMetadata().partition()).isGreaterThanOrEqualTo(0);
+                }).join();
 
     }
 }

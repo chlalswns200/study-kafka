@@ -17,7 +17,7 @@ public class MessageProducer {
 
     private final KafkaTemplate<String, String> kafkaTemplate;
 
-    public void send(String topic, String key, String message) {
+    public CompletableFuture<SendResult<String, String>> send(String topic, String key, String message) {
         CompletableFuture<SendResult<String, String>> future = kafkaTemplate.send(topic, key, message);
 
         future.whenComplete((result, ex) -> {
@@ -30,7 +30,7 @@ public class MessageProducer {
                 log.error("[MessageProducer send Error]",ex);
             }
         });
-
+        return future;
     }
 
 

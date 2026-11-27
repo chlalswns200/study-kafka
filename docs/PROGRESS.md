@@ -6,7 +6,8 @@
 ## 현재 위치
 
 - **진행 중**: Stage 3. Consumer 기초 (② 코드 적용 — 개념 설명 완료, 2026-11-26)
-- **다음 할 일**: 과제 0~4 구현 → 코드 리뷰 → 문제 출제
+- **다음 할 일**: 과제 3·4 → 코드 리뷰 → 문제 출제 (과제 0~2 완료, 2026-11-27)
+  - 과제 2 결과 해석 시 오개념: "두 그룹이 10개를 나눠 가진다" → 실제 로그는 **두 그룹이 각각 10개 전부** 수신(user5가 A·B 둘 다). 나눠 갖는 건 **같은 그룹 안의 컨슈머끼리** → 과제 3에서 확인. 채점 때 다시 짚기
   - 과제 0: `spring.kafka.consumer` 설정 (StringDeserializer, `auto-offset-reset: earliest` — 왜 earliest인지 생각)
   - 과제 1: `com.kafkastudy.stage3` — `stage2-messages`를 구독하는 리스너(group `stage3-group-a`), `ConsumerRecord`로 key/partition/offset/value/스레드명 로그
   - 과제 2: 같은 토픽, 다른 그룹(`stage3-group-b`) 리스너 추가 → 둘 다 받는지 비교

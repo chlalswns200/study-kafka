@@ -56,6 +56,26 @@ class MessageControllerTest {
     }
 
     @Test
+    @DisplayName("카프카 메시지 다건 순차 전송 성공")
+    void sendMultipleMessagesSuccessTest() {
+        int messageCount = 10;
+
+        for (int i = 0; i < messageCount; i++) {
+            SendRequest sendRequest = new SendRequest("user" + i, "value" + i);
+
+            ResponseEntity<Void> entity = restClient.post()
+                    .uri("/messages")
+                    .body(sendRequest)
+                    .retrieve()
+                    .toBodilessEntity();
+
+            assertThat(entity.getStatusCode())
+                    .as("%d번째 메시지 전송 응답 코드 검증", i)
+                    .isEqualTo(HttpStatus.ACCEPTED);
+        }
+    }
+
+    @Test
     @DisplayName("카프카 전송 실패 - 500")
     void sendFailTest() {
 
